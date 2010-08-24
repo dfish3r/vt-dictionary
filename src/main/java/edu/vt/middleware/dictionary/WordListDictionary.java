@@ -13,11 +13,8 @@
 */
 package edu.vt.middleware.dictionary;
 
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -43,11 +40,16 @@ public class WordListDictionary implements Dictionary
 
 
   /**
-   * Sets the word list to used for searching.
+   * Creates a new dictionary instance from the given {@link WordList}.
    *
-   * @param  wl  <code>WordList</code> to read from
+   * @param  wl  List of words sorted according to
+   * {@link WordList#getComparator()}.
+   * <p>
+   * <strong>NOTE</strong>
+   * <p>
+   * Failure to provide a sorted word list will produce incorrect results.
    */
-  public void setWordList(final WordList wl)
+  public WordListDictionary(final WordList wl)
   {
     this.wordList = wl;
   }
@@ -65,49 +67,9 @@ public class WordListDictionary implements Dictionary
 
 
   /** {@inheritDoc} */
-  public void initialize()
-    throws IOException
-  {
-    this.lowerCase = this.wordList.isLowerCase();
-  }
-
-
-  /** {@inheritDoc} */
   public boolean search(final String word)
   {
-    if (this.lowerCase) {
-      return Collections.binarySearch(this.wordList, word.toLowerCase()) >= 0;
-    } else {
-      return Collections.binarySearch(this.wordList, word) >= 0;
-    }
-  }
-
-
-  /**
-   * Returns whether the supplied word exists in the dictionary. See
-   * {@link java.util.Collections#binarySearch(List, Object, Comparator)}.
-   *
-   * @param  word  <code>String</code> to search for
-   * @param  c  <code>Comparator</code> to use against the word list
-   *
-   * @return  <code>boolean</code> - whether word was found
-   */
-  public boolean search(final String word, final Comparator<String> c)
-  {
-    if (this.lowerCase) {
-      return Collections.binarySearch(
-        this.wordList, word.toLowerCase(), c) >= 0;
-    } else {
-      return Collections.binarySearch(this.wordList, word, c) >= 0;
-    }
-  }
-
-
-  /** {@inheritDoc} */
-  public void close()
-    throws IOException
-  {
-    this.wordList.close();
+    return WordListUtils.binarySearch(wordList, word) >= 0;
   }
 
 
@@ -151,11 +113,9 @@ public class WordListDictionary implements Dictionary
       }
 
       // insert data
-      final WordListDictionary dict = new WordListDictionary();
-      dict.setWordList(
-        new FilePointerWordList(
-          files.toArray(new RandomAccessFile[files.size()]), ignoreCase));
-      dict.initialize();
+      final WordListDictionary dict = new WordListDictionary(
+          new FilePointerWordList(
+              files.toArray(new RandomAccessFile[files.size()]), ignoreCase));
 
       // perform operation
       if (search) {

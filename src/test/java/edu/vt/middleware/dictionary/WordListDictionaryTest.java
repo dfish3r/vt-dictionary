@@ -14,8 +14,6 @@
 package edu.vt.middleware.dictionary;
 
 import java.io.FileReader;
-import java.io.RandomAccessFile;
-import edu.vt.middleware.dictionary.sort.CollectionsSort;
 import org.testng.AssertJUnit;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
@@ -44,40 +42,12 @@ public class WordListDictionaryTest extends AbstractDictionaryTest
   public void createDictionary()
     throws Exception
   {
-    final CollectionsSort sorter = new CollectionsSort();
-
-    final ArrayWordList awl1 = new ArrayWordList(
-      new FileReader[] {new FileReader(this.fbsdFile)});
-    sorter.sort(awl1);
-    this.caseSensitive = new WordListDictionary();
-    this.caseSensitive.setWordList(awl1);
-    this.caseSensitive.initialize();
-
-    final ArrayWordList awl2 = new ArrayWordList(
-      new FileReader[] {new FileReader(this.fbsdFile)}, true);
-    sorter.sort(awl2);
-    this.caseInsensitive = new WordListDictionary();
-    this.caseInsensitive.setWordList(awl2);
-    this.caseInsensitive.initialize();
-  }
-
-
-  /**
-   * @throws  Exception  On test failure.
-   */
-  @Test(groups = {"wldicttest"})
-  public void getWords()
-    throws Exception
-  {
-    FilePointerWordList fwl = new FilePointerWordList(
-      new RandomAccessFile[] {new RandomAccessFile(this.fbsdFileSorted, "r")});
-    AssertJUnit.assertEquals(fwl, this.caseSensitive.getWordList());
-    fwl.close();
-    fwl = new FilePointerWordList(
-      new RandomAccessFile[] {
-        new RandomAccessFile(this.fbsdFileLowerCaseSorted, "r"), });
-    AssertJUnit.assertEquals(fwl, this.caseInsensitive.getWordList());
-    fwl.close();
+    this.caseSensitive = new WordListDictionary(
+        WordListUtils.createFromFile(
+            new FileReader(this.fbsdFile), true, true));
+    this.caseInsensitive = new WordListDictionary(
+        WordListUtils.createFromFile(
+            new FileReader(this.fbsdFile), false, true));
   }
 
 

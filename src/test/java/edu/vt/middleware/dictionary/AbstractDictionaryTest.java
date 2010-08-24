@@ -168,7 +168,7 @@ public abstract class AbstractDictionaryTest
     this.fbsdFileLowerCaseSorted = dict8;
 
     synchronized (LOCK) {
-      if (webWords== null) {
+      if (webWords == null) {
         webWords = this.createWords(webFile);
       }
       if (fbsdWords == null) {

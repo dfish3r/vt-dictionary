@@ -32,6 +32,9 @@ public class WordListFilePointerBackedDictionaryPerfTest
   /** dictionary to test. */
   private WordListDictionary wld;
 
+  /** file word list */
+  private FileWordList fileWordList;
+
   /** total time for all searches. */
   private long wldSearchTime;
 
@@ -49,11 +52,8 @@ public class WordListFilePointerBackedDictionaryPerfTest
   {
     super.initialize(dict1, dict2);
     long t = System.currentTimeMillis();
-    this.wld = new WordListDictionary();
-    this.wld.setWordList(
-      new FilePointerWordList(
-        new RandomAccessFile[] {new RandomAccessFile(webFile, "r")}));
-    this.wld.initialize();
+    this.fileWordList = new FileWordList(new RandomAccessFile(webFile, "r"));
+    this.wld = new WordListDictionary(fileWordList);
     t = System.currentTimeMillis() - t;
     System.out.println(
       this.wld.getClass().getSimpleName() + " (" +
@@ -66,10 +66,10 @@ public class WordListFilePointerBackedDictionaryPerfTest
    * @throws  Exception  On test failure.
    */
   @AfterClass(groups = {"wlperftest"})
-  public void closeDictionary()
+  public void cleanUp()
     throws Exception
   {
-    this.wld.close();
+    this.fileWordList.close();
     System.out.println(
       this.wld.getClass().getSimpleName() + " (" +
       FilePointerWordList.class.getSimpleName() + ") search time: " +

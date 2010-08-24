@@ -28,14 +28,14 @@ import org.testng.annotations.DataProvider;
 public abstract class AbstractDictionaryPerfTest
 {
 
-  /** Initialization lock. */
-  private static final Object LOCK = new Object();
-
   /** location of webster's dictionary. */
   protected static String webFile;
 
   /** location of freebsd dictionary. */
   protected static String fbsdFile;
+
+  /** Initialization lock. */
+  private static final Object LOCK = new Object();
 
   /** store a large array of random words from {@link #webFile}. */
   private static Object[][] randomWebWordsLarge;

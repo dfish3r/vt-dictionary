@@ -12,4 +12,8 @@
   <!-- nothing magic about test data -->
   <suppress checks="MagicNumber"
             files=".*Test\.java" />
+
+  <!-- TreeMap is needed for implementation of FileWordList -->
+  <suppress checks="MagicNumber"
+            files="FileWordList.java" />
 </suppressions>

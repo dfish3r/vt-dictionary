@@ -49,10 +49,8 @@ public class WordListArrayBackedDictionaryPerfTest
   {
     super.initialize(dict1, dict2);
     long t = System.currentTimeMillis();
-    this.wld = new WordListDictionary();
-    this.wld.setWordList(
-      new ArrayWordList(new FileReader[] {new FileReader(webFile)}));
-    this.wld.initialize();
+    this.wld = new WordListDictionary(
+        WordListUtils.createFromFile(new FileReader(webFile)));
     t = System.currentTimeMillis() - t;
     System.out.println(
       this.wld.getClass().getSimpleName() + " (" +
@@ -64,10 +62,9 @@ public class WordListArrayBackedDictionaryPerfTest
    * @throws  Exception  On test failure.
    */
   @AfterClass(groups = {"wlperftest"})
-  public void closeDictionary()
+  public void cleanUp()
     throws Exception
   {
-    this.wld.close();
     System.out.println(
       this.wld.getClass().getSimpleName() + " (" +
       ArrayWordList.class.getSimpleName() + ") search time: " +

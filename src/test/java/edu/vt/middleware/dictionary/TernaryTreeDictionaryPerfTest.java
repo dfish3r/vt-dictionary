@@ -48,15 +48,13 @@ public class TernaryTreeDictionaryPerfTest extends AbstractDictionaryPerfTest
   {
     super.initialize(dict1, dict2);
     long t = System.currentTimeMillis();
-    this.ttd = new TernaryTreeDictionary();
-    this.ttd.setUseMedian(true);
-    this.ttd.setWordList(
-      new FilePointerWordList(
-        new RandomAccessFile[] {new RandomAccessFile(webFile, "r")}));
-    this.ttd.initialize();
+    final FilePointerWordList wl = new FilePointerWordList(
+        new RandomAccessFile[] {new RandomAccessFile(webFile, "r")});
+    this.ttd = new TernaryTreeDictionary(wl, true);
     t = System.currentTimeMillis() - t;
     System.out.println(
       this.ttd.getClass().getSimpleName() + " time to construct: " + t + "ms");
+    wl.close();
   }
 
 
@@ -64,10 +62,9 @@ public class TernaryTreeDictionaryPerfTest extends AbstractDictionaryPerfTest
    * @throws  Exception  On test failure.
    */
   @AfterClass(groups = {"ttperftest"})
-  public void closeDictionary()
+  public void cleanUp()
     throws Exception
   {
-    this.ttd.close();
     System.out.println(
       this.ttd.getClass().getSimpleName() + " search time: " +
       (this.ttdSearchTime / 1000 / 1000) + "ms");
